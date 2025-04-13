@@ -1,0 +1,112 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Génération de votre BD personnalisée</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            text-align: center;
+        }
+        .loader {
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid #3498db;
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
+        }
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .hidden {
+            display: none;
+        }
+        .message {
+            margin: 20px 0;
+            font-size: 18px;
+        }
+        .success-icon {
+            color: green;
+            font-size: 48px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <h1>Votre BD personnalisée est en cours de création</h1>
+    
+    <div id="loading-section">
+        <p class="message">Merci pour votre achat! Nous générons actuellement votre BD...</p>
+        <div class="loader"></div>
+        <p>Cette opération peut prendre quelques minutes. Veuillez patienter.</p>
+    </div>
+    
+    <div id="success-section" class="hidden">
+        <div class="success-icon">✓</div>
+        <h2>Votre BD est prête !</h2>
+        <p id="success-message"></p>
+        <div id="action-buttons">
+            <p><a id="view-pdf-btn" href="/view-pdf" target="_blank" class="btn">Voir ma BD maintenant</a></p>
+        </div>
+    </div>
+    
+    <div id="error-section" class="hidden">
+        <h2>Une erreur est survenue</h2>
+        <p id="error-message"></p>
+        <p><a href="/" class="btn">Retour à l'accueil</a></p>
+    </div>
+
+    <script>
+        // Fonction pour lancer la génération de la BD
+        function startComicGeneration() {
+            fetch('/process-comic')
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('loading-section').classList.add('hidden');
+                        document.getElementById('success-section').classList.remove('hidden');
+                        
+                        // Message selon le plan
+                        if (data.plan === 'livre_physique') {
+                            document.getElementById('success-message').innerText = 
+                                'Votre commande de livre physique a été transmise à notre imprimeur. Votre adresse de livraison a été enregistrée.';
+                        } else if (data.plan === 'bundle') {
+                            document.getElementById('success-message').innerText = 
+                                'Votre BD numérique est disponible ci-dessous. Votre exemplaire physique a également été commandé et sera imprimé sous peu.';
+                        } else {
+                            document.getElementById('success-message').innerText = 
+                                'Votre BD numérique est disponible ci-dessous. Cliquez sur le bouton pour l\'ouvrir.';
+                        }
+                        
+                        // Si c'est un livre physique uniquement, on cache le bouton de visualisation
+                        if (data.plan === 'livre_physique') {
+                            document.getElementById('view-pdf-btn').classList.add('hidden');
+                        }
+                    } else {
+                        showError(data.error || 'Une erreur s\'est produite lors de la génération de votre BD.');
+                    }
+                })
+                .catch(error => {
+                    showError('Erreur de communication avec le serveur. Veuillez réessayer plus tard.');
+                    console.error('Error:', error);
+                });
+        }
+        
+        function showError(message) {
+            document.getElementById('loading-section').classList.add('hidden');
+            document.getElementById('error-section').classList.remove('hidden');
+            document.getElementById('error-message').innerText = message;
+        }
+        
+        // Lancer la génération au chargement de la page
+        window.onload = startComicGeneration;
+    </script>
+</body>
+</html>

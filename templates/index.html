@@ -1,0 +1,851 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Créez votre bande dessinée personnalisée - Univers BD</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;600;800&family=Rowdies:wght@400;700&display=swap');
+        
+        :root {
+            --primary-color: #FF3019;
+            --secondary-color: #FF9800;
+            --accent-color: #6C63FF;
+            --dark-color: #1A1A2E;
+            --highlight-color: #FFD700;
+            --form-bg: rgba(26, 26, 46, 0.85);
+            --input-bg: rgba(255, 48, 25, 0.2);
+            --button-gradient-1: #FF0844;
+            --button-gradient-2: #FFB199;
+            --text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            color: white;
+            overflow-x: hidden;
+            background-color: var(--dark-color);
+            position: relative;
+            min-height: 100vh;
+        }
+        
+        /* Animation principale de fond */
+        .hero-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(125deg, #000000, #1A1A2E, #370617, #6A040F, #9D0208);
+            background-size: 400% 400%;
+            animation: gradientBG 15s ease infinite;
+            z-index: -10;
+        }
+        
+        @keyframes gradientBG {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Effet de pages de BD qui volent */
+        .flying-pages {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -8;
+            perspective: 1000px;
+            opacity: 0.6;
+        }
+        
+        .page {
+            position: absolute;
+            width: 150px;
+            height: 200px;
+            background: white;
+            transform-style: preserve-3d;
+            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            opacity: 0.2;
+            animation: floatPage 25s linear infinite;
+        }
+        
+        .page:nth-child(1) {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+            animation-duration: 30s;
+        }
+        
+        .page:nth-child(2) {
+            top: 70%;
+            left: 80%;
+            animation-delay: 5s;
+            animation-duration: 35s;
+        }
+        
+        .page:nth-child(3) {
+            top: 20%;
+            left: 85%;
+            animation-delay: 8s;
+            animation-duration: 28s;
+        }
+        
+        .page:nth-child(4) {
+            top: 60%;
+            left: 15%;
+            animation-delay: 12s;
+            animation-duration: 32s;
+        }
+        
+        .page:nth-child(5) {
+            top: 40%;
+            left: 50%;
+            animation-delay: 15s;
+            animation-duration: 40s;
+        }
+        
+        @keyframes floatPage {
+            0% {
+                transform: translateZ(0) rotate(0deg) translateX(0) translateY(0);
+                opacity: 0;
+            }
+            5% {
+                opacity: 0.4;
+            }
+            50% {
+                transform: translateZ(500px) rotateX(180deg) rotateY(45deg) translateX(-100px) translateY(-200px);
+                opacity: 0.6;
+            }
+            90% {
+                opacity: 0.4;
+            }
+            100% {
+                transform: translateZ(0) rotateX(360deg) rotateY(90deg) translateX(-200px) translateY(-500px);
+                opacity: 0;
+            }
+        }
+        
+        /* Effet de maillage graphique */
+        .grid-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: 
+                linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+            z-index: -7;
+        }
+        
+        /* Container principal */
+        .container {
+            width: 100%;
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        /* Section héro */
+        .hero-section {
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            padding: 80px 0;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        /* Animation de traits de BD */
+        .action-lines {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            overflow: hidden;
+        }
+        
+        .action-line {
+            position: absolute;
+            background: linear-gradient(90deg, rgba(255,215,0,0), rgba(255,215,0,0.8), rgba(255,215,0,0));
+            height: 2px;
+            width: 100px;
+            opacity: 0;
+            transform-origin: left center;
+            animation: actionLine 10s infinite;
+        }
+        
+        @keyframes actionLine {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+            }
+            50% {
+                transform: scale(4) rotate(25deg);
+                opacity: 0.8;
+            }
+            100% {
+                transform: scale(8) rotate(45deg);
+                opacity: 0;
+            }
+        }
+        
+        /* Titre et sous-titre */
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        
+        .hero-title {
+            font-family: 'Bangers', cursive;
+            font-size: 5.5rem;
+            color: var(--highlight-color);
+            text-shadow: 5px 5px 0 #000, 
+                        -2px -2px 0 #000,
+                        2px -2px 0 #000,
+                        -2px 2px 0 #000,
+                        2px 2px 0 #000;
+            letter-spacing: 3px;
+            margin-bottom: 30px;
+            transform: rotate(-2deg);
+            animation: titleAnimation 3s infinite alternate;
+            position: relative;
+            display: inline-block;
+        }
+        
+        @keyframes titleAnimation {
+            0% {
+                transform: rotate(-2deg) scale(1);
+                text-shadow: 5px 5px 0 #000, 
+                        -2px -2px 0 #000,
+                        2px -2px 0 #000,
+                        -2px 2px 0 #000,
+                        2px 2px 0 #000;
+            }
+            100% {
+                transform: rotate(-1deg) scale(1.03);
+                text-shadow: 8px 8px 0 #000, 
+                        -3px -3px 0 #000,
+                        3px -3px 0 #000,
+                        -3px 3px 0 #000,
+                        3px 3px 0 #000;
+            }
+        }
+        
+        /* Effet "POW" stylisé derrière le titre */
+        .pow-effect {
+            position: absolute;
+            width: 120%;
+            height: 120%;
+            top: -10%;
+            left: -10%;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,0 L60,30 L95,35 L70,60 L75,95 L50,80 L25,95 L30,60 L5,35 L40,30 Z" fill="%23FF3019" stroke="%23000" stroke-width="2"/></svg>');
+            background-size: contain;
+            background-repeat: no-repeat;
+            background-position: center;
+            z-index: -1;
+            animation: rotate 20s linear infinite;
+            opacity: 0.6;
+        }
+        
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+        
+        .hero-subtitle {
+            font-size: 1.5rem;
+            margin-bottom: 50px;
+            text-align: center;
+            font-weight: 400;
+            color: white;
+            text-shadow: var(--text-shadow);
+            line-height: 1.6;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .hero-subtitle strong {
+            font-weight: 600;
+            color: var(--secondary-color);
+        }
+        
+        /* Forme 3D pour la zone centrale */
+        .central-area {
+            position: relative;
+            width: 100%;
+            margin-top: 40px;
+            perspective: 1000px;
+        }
+        
+        .card-3d-wrapper {
+            transform-style: preserve-3d;
+            width: 100%;
+            height: 100%;
+            transition: transform 1s ease;
+        }
+        
+        .card-3d-wrapper:hover {
+            transform: rotateY(5deg);
+        }
+        
+        .card-3d-front, .card-3d-back {
+            width: 100%;
+            min-height: 500px;
+            background-color: var(--form-bg);
+            border-radius: 20px;
+            position: relative;
+            transform-style: preserve-3d;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            backface-visibility: hidden;
+            -webkit-backface-visibility: hidden;
+            overflow: hidden;
+        }
+        
+        .card-3d-front:before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(255, 48, 25, 0.3), rgba(108, 99, 255, 0.3));
+            opacity: 0.5;
+            z-index: -1;
+        }
+        
+        /* Effet de lueur sur les bords */
+        .glow-border {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color), var(--primary-color), var(--secondary-color));
+            background-size: 400% 400%;
+            border-radius: 22px;
+            z-index: -1;
+            animation: glowAnimation 3s ease infinite;
+        }
+        
+        @keyframes glowAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        /* Contenu de la carte 3D */
+        .card-content {
+            display: flex;
+            flex-direction: column;
+            padding: 40px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        @media (min-width: 992px) {
+            .card-content {
+                flex-direction: row;
+                gap: 40px;
+            }
+        }
+        
+        /* Formulaire stylisé */
+        .form-section {
+            flex: 1;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .form-title {
+            font-family: 'Rowdies', cursive;
+            font-size: 2.2rem;
+            color: var(--highlight-color);
+            margin-bottom: 30px;
+            text-shadow: var(--text-shadow);
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+            position: relative;
+        }
+        
+        label {
+            display: block;
+            font-family: 'Rowdies', cursive;
+            font-size: 1.3rem;
+            margin-bottom: 15px;
+            color: white;
+            text-shadow: var(--text-shadow);
+        }
+        
+        input, select {
+            width: 100%;
+            padding: 18px 20px;
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            background-color: var(--input-bg);
+            color: white;
+            font-size: 1.1rem;
+            font-family: 'Poppins', sans-serif;
+            transition: all 0.4s ease;
+            backdrop-filter: blur(5px);
+            box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+        
+        input:focus, select:focus {
+            outline: none;
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+        
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.6);
+        }
+        
+        select {
+            appearance: none;
+            background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='24' height='24' viewBox='0 0 24 24' fill='none' stroke='%23FFD700' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'></polyline></svg>");
+            background-repeat: no-repeat;
+            background-position: right 15px center;
+            background-size: 18px;
+        }
+        
+        /* Zone de prévisualisation */
+        .preview-section {
+            flex: 1;
+            position: relative;
+            margin-top: 40px;
+        }
+        
+        @media (min-width: 992px) {
+            .preview-section {
+                margin-top: 0;
+            }
+        }
+        
+        .preview-frame {
+            border: 3px solid rgba(255, 215, 0, 0.5);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.3);
+            position: relative;
+            height: 400px;
+            background: linear-gradient(45deg, #370617, #6A040F, #9D0208);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+            opacity: 0.8;
+        }
+        
+        .preview-frame:hover .preview-image {
+            transform: scale(1.05);
+        }
+        
+        /* Comic-style speech bubble */
+        .speech-bubble {
+            position: absolute;
+            top: 30px;
+            right: 30px;
+            padding: 20px;
+            background: white;
+            border-radius: 50% 50% 50% 0;
+            max-width: 200px;
+            transform: rotate(5deg);
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+            z-index: 5;
+        }
+        
+        .speech-bubble:before {
+            content: "";
+            position: absolute;
+            width: 30px;
+            height: 30px;
+            background: white;
+            bottom: -10px;
+            left: 20px;
+            border-radius: 50%;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+            z-index: -1;
+        }
+        
+        .speech-bubble:after {
+            content: "";
+            position: absolute;
+            width: 15px;
+            height: 15px;
+            background: white;
+            bottom: -20px;
+            left: 10px;
+            border-radius: 50%;
+            box-shadow: 5px 5px 0 rgba(0, 0, 0, 0.8);
+            z-index: -1;
+        }
+        
+        .speech-text {
+            font-family: 'Bangers', cursive;
+            color: black;
+            font-size: 1.2rem;
+            letter-spacing: 1px;
+        }
+        
+        /* Bouton de création stylisé */
+        .create-btn {
+            display: inline-block;
+            width: 100%;
+            padding: 18px 30px;
+            background: linear-gradient(45deg, var(--button-gradient-1), var(--button-gradient-2));
+            color: white;
+            font-size: 1.4rem;
+            font-weight: bold;
+            text-align: center;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+            font-family: 'Bangers', cursive;
+            letter-spacing: 2px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+            transition: all 0.4s ease;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+        }
+        
+        .create-btn:before {
+            content: "";
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+            transition: 0.5s;
+        }
+        
+        .create-btn:hover:before {
+            left: 100%;
+        }
+        
+        .create-btn:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+        }
+        
+        .create-btn:active {
+            transform: translateY(2px);
+        }
+        
+        .comic-deco {
+            position: absolute;
+            font-family: 'Bangers', cursive;
+            color: var(--highlight-color);
+            text-shadow: 3px 3px 0 #000;
+            font-size: 3rem;
+            z-index: 1;
+            opacity: 0.5;
+            animation: float 6s ease-in-out infinite;
+        }
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-20px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .deco1 {
+            top: 10%;
+            left: 5%;
+            animation-delay: 0s;
+        }
+        
+        .deco2 {
+            bottom: 15%;
+            right: 8%;
+            animation-delay: 1s;
+        }
+        
+        .deco3 {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+        
+        .dots-pattern {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: radial-gradient(rgba(255, 255, 255, 0.15) 2px, transparent 2px);
+            background-size: 30px 30px;
+            z-index: -1;
+        }
+        
+        .floating-element {
+            position: absolute;
+            z-index: 1;
+            filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+            animation: floatElement 8s ease-in-out infinite;
+        }
+        
+        @keyframes floatElement {
+            0% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-15px) rotate(5deg); }
+            100% { transform: translateY(0) rotate(0deg); }
+        }
+        
+        .float1 {
+            top: 10%;
+            left: 10%;
+            width: 100px;
+            height: 100px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="%23FF9800" stroke="%23000" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="%23000" font-family="Arial" font-weight="bold">!</text></svg>');
+            background-size: contain;
+            animation-delay: 0s;
+        }
+        
+        .float2 {
+            top: 70%;
+            right: 10%;
+            width: 80px;
+            height: 80px;
+            background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><polygon points="12,2 22,9 18,22 6,22 2,9" fill="%236C63FF" stroke="%23000" stroke-width="2"/><text x="12" y="16" text-anchor="middle" font-size="12" fill="%23000" font-family="Arial" font-weight="bold">?</text></svg>');
+            background-size: contain;
+            animation-delay: 1s;
+        }
+        
+        @media (max-width: 992px) {
+            .hero-title {
+                font-size: 4rem;
+            }
+            
+            .card-content {
+                padding: 30px;
+            }
+            
+            .form-title {
+                font-size: 1.8rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .hero-title {
+                font-size: 3.2rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .card-content {
+                padding: 25px;
+            }
+            
+            .preview-frame {
+                height: 300px;
+            }
+            
+            .form-title {
+                font-size: 1.6rem;
+            }
+            
+            label {
+                font-size: 1.1rem;
+            }
+            
+            .create-btn {
+                font-size: 1.2rem;
+                padding: 15px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .hero-title {
+                font-size: 2.5rem;
+            }
+            
+            .hero-subtitle {
+                font-size: 1.1rem;
+            }
+            
+            .card-content {
+                padding: 20px;
+            }
+            
+            .form-title {
+                font-size: 1.4rem;
+                margin-bottom: 20px;
+            }
+            
+            label {
+                font-size: 1rem;
+                margin-bottom: 10px;
+            }
+            
+            input, select {
+                padding: 15px;
+            }
+            
+            .create-btn {
+                font-size: 1.1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fond dynamique -->
+    <div class="hero-bg"></div>
+    <div class="grid-overlay"></div>
+    
+    <!-- Pages de BD qui volent -->
+    <div class="flying-pages">
+        <div class="page"></div>
+        <div class="page"></div>
+        <div class="page"></div>
+        <div class="page"></div>
+        <div class="page"></div>
+    </div>
+    
+    <!-- Conteneur principal -->
+    <div class="container">
+        <section class="hero-section">
+            <!-- Effets de décoration -->
+            <div class="action-lines"></div>
+            <div class="comic-deco deco1">BAM!</div>
+            <div class="comic-deco deco2">POW!</div>
+            <div class="comic-deco deco3">ZOOM!</div>
+            <div class="floating-element float1"></div>
+            <div class="floating-element float2"></div>
+            
+            <!-- Contenu du héro -->
+            <div class="hero-content">
+                <h1 class="hero-title">
+                    <div class="pow-effect"></div>
+                    CRÉEZ VOTRE BD PERSONNALISÉE
+                </h1>
+                <p class="hero-subtitle">
+                    Plongez dans un <strong>univers graphique unique</strong> où vous êtes le héros ! Renseignez simplement vos informations et préférences pour générer votre propre histoire épique, riche en <strong>aventures</strong> et en <strong>émotions</strong> !
+                </p>
+            </div>
+            
+            <!-- Zone centrale avec carte 3D -->
+            <div class="central-area">
+                <div class="card-3d-wrapper">
+                    <div class="card-3d-front">
+                        <div class="glow-border"></div>
+                        <div class="dots-pattern"></div>
+                        
+                        <div class="card-content">
+                            <!-- Section formulaire -->
+                            <div class="form-section">
+                                <h2 class="form-title">Personnalisez votre aventure</h2>
+                                
+                                <!-- Formulaire vers /choose-plan (changement ici) -->
+                                <form action="/choose-plan" method="POST">
+                                    <div class="form-group">
+                                        <label for="name">Votre nom de héros</label>
+                                        <input type="text" id="name" name="name" placeholder="Comment s'appelle votre personnage ?" autocomplete="off" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="age">Âge</label>
+                                        <input type="text" id="age" name="age" placeholder="Quel est l'âge du héros ?" autocomplete="off" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="appearance">Caractéristiques physiques</label>
+                                        <input type="text" id="appearance" name="appearance" placeholder="Décrivez rapidement votre héros" autocomplete="off" required>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="style">Style graphique</label>
+                                        <select id="style" name="style" required>
+                                            <option value="" disabled selected>Choisissez un style</option>
+                                            <option value="manga">Manga</option>
+                                            <option value="americain">Comics américain</option>
+                                            <option value="europeen">Franco-belge</option>
+                                            <option value="cartoon">Cartoon</option>
+                                            <option value="realiste">Réaliste</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="ambiance">Ambiance</label>
+                                        <select id="ambiance" name="ambiance" required>
+                                            <option value="" disabled selected>Choisissez une ambiance</option>
+                                            <option value="dynamic">Action intense</option>
+                                            <option value="mysterious">Mystère inquiétant</option>
+                                            <option value="cheerful">Aventure joyeuse</option>
+                                            <option value="dramatic">Drame profond</option>
+                                            <option value="horror">Horreur</option>
+                                        </select>
+                                    </div>
+                                    
+                                    <div class="form-group">
+                                        <label for="theme">Thème principal</label>
+                                        <select id="theme" name="theme" required>
+                                            <option value="" disabled selected>Choisissez un thème</option>
+                                            <option value="time-travel">Voyage temporel</option>
+                                            <option value="mystery">Enquête mystérieuse</option>
+                                            <option value="superhero">Super-héros</option>
+                                            <option value="fantasy">Mondes fantastiques</option>
+                                            <option value="dystopian">Future dystopique</option>
+                                        </select>
+                                    </div>
+
+                                    <div class="form-group">
+                                        <label for="email">Adresse e-mail</label>
+                                        <input type="email" id="email" name="email" placeholder="Pour recevoir votre BD" autocomplete="off" required>
+                                    </div>
+
+                                    <button type="submit" class="create-btn">CRÉER MA BD ÉPIQUE</button>
+                                </form>
+                            </div>
+                            
+                            <!-- Section prévisualisation -->
+                            <div class="preview-section">
+                                <div class="preview-frame">
+                                    <img src="static/images/BD.png" alt="Exemple de bande dessinée" class="preview-image">
+                                    <div class="speech-bubble">
+                                        <p class="speech-text">Votre histoire extraordinaire commence ici !</p>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        </div> <!-- fin .card-content -->
+                    </div> <!-- fin .card-3d-front -->
+                </div> <!-- fin .card-3d-wrapper -->
+            </div> <!-- fin .central-area -->
+        </section>
+    </div>
+</body>
+</html>

@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Choisissez votre plan - Univers BD</title>
+  <!-- Import Google Fonts (identique à index.html) -->
+  <link href="https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;600;800&family=Rowdies:wght@400;700&display=swap" rel="stylesheet">
+
+  <style>
+    /* ================================
+       Variables et style général
+       ================================ */
+    @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;600;800&family=Rowdies:wght@400;700&display=swap');
+
+    :root {
+      --primary-color: #FF3019;
+      --secondary-color: #FF9800;
+      --accent-color: #6C63FF;
+      --dark-color: #1A1A2E;
+      --highlight-color: #FFD700;
+      --form-bg: rgba(26, 26, 46, 0.85);
+      --input-bg: rgba(255, 48, 25, 0.2);
+      --button-gradient-1: #FF0844;
+      --button-gradient-2: #FFB199;
+      --text-shadow: 0 2px 10px rgba(0, 0, 0, 0.5);
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: 'Poppins', sans-serif;
+      color: white;
+      overflow-x: hidden;
+      background-color: var(--dark-color);
+      position: relative;
+      min-height: 100vh;
+    }
+
+    /* ================================
+       Arrière-plan animé (identique index.html)
+       ================================ */
+    .hero-bg {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(125deg, #000000, #1A1A2E, #370617, #6A040F, #9D0208);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      z-index: -10;
+    }
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    .grid-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-image: 
+        linear-gradient(rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+      background-size: 50px 50px;
+      z-index: -7;
+    }
+
+    .flying-pages {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -8;
+      perspective: 1000px;
+      opacity: 0.6;
+    }
+    .page {
+      position: absolute;
+      width: 150px;
+      height: 200px;
+      background: white;
+      transform-style: preserve-3d;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+      opacity: 0.2;
+      animation: floatPage 25s linear infinite;
+    }
+    .page:nth-child(1) { top: 10%; left: 5%;  animation-delay: 0s;  animation-duration: 30s; }
+    .page:nth-child(2) { top: 70%; left: 80%; animation-delay: 5s;  animation-duration: 35s; }
+    .page:nth-child(3) { top: 20%; left: 85%; animation-delay: 8s;  animation-duration: 28s; }
+    .page:nth-child(4) { top: 60%; left: 15%; animation-delay: 12s; animation-duration: 32s; }
+    .page:nth-child(5) { top: 40%; left: 50%; animation-delay: 15s; animation-duration: 40s; }
+    @keyframes floatPage {
+      0% {
+        transform: translateZ(0) rotate(0deg) translateX(0) translateY(0);
+        opacity: 0;
+      }
+      5% {
+        opacity: 0.4;
+      }
+      50% {
+        transform: translateZ(500px) rotateX(180deg) rotateY(45deg) translateX(-100px) translateY(-200px);
+        opacity: 0.6;
+      }
+      90% {
+        opacity: 0.4;
+      }
+      100% {
+        transform: translateZ(0) rotateX(360deg) rotateY(90deg) translateX(-200px) translateY(-500px);
+        opacity: 0;
+      }
+    }
+
+    /* ================================
+       Décorations (identique index.html)
+       ================================ */
+    .action-lines {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: -1;
+      overflow: hidden;
+    }
+
+    .comic-deco {
+      position: absolute;
+      font-family: 'Bangers', cursive;
+      color: var(--highlight-color);
+      text-shadow: 3px 3px 0 #000;
+      font-size: 3rem;
+      z-index: 1;
+      opacity: 0.5;
+      animation: float 6s ease-in-out infinite;
+    }
+    .deco1 { top: 10%; left: 5%;  animation-delay: 0s; }
+    .deco2 { bottom: 15%; right: 8%; animation-delay: 1s; }
+    .deco3 { top: 20%; right: 10%; animation-delay: 2s; }
+
+    @keyframes float {
+      0% { transform: translateY(0)   rotate(0deg); }
+      50% { transform: translateY(-20px) rotate(5deg); }
+      100% { transform: translateY(0)   rotate(0deg); }
+    }
+
+    .floating-element {
+      position: absolute;
+      z-index: 1;
+      filter: drop-shadow(0 10px 15px rgba(0, 0, 0, 0.3));
+      animation: floatElement 8s ease-in-out infinite;
+    }
+    @keyframes floatElement {
+      0% { transform: translateY(0) rotate(0deg); }
+      50% { transform: translateY(-15px) rotate(5deg); }
+      100% { transform: translateY(0) rotate(0deg); }
+    }
+    .float1 {
+      top: 10%;
+      left: 10%;
+      width: 100px;
+      height: 100px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><circle cx="50" cy="50" r="40" fill="%23FF9800" stroke="%23000" stroke-width="3"/><text x="50" y="50" dominant-baseline="middle" text-anchor="middle" fill="%23000" font-family="Arial" font-weight="bold" font-size="40">!</text></svg>');
+      background-size: contain;
+      animation-delay: 0s;
+    }
+    .float2 {
+      top: 70%;
+      right: 10%;
+      width: 80px;
+      height: 80px;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><polygon points="50,0 95,35 80,90 20,90 5,35" fill="%236C63FF" stroke="%23000" stroke-width="3"/><text x="50" y="60" dominant-baseline="middle" text-anchor="middle" fill="%23000" font-family="Arial" font-weight="bold" font-size="40">?</text></svg>');
+      background-size: contain;
+      animation-delay: 1s;
+    }
+
+    /* ================================
+       Container principal
+       ================================ */
+    .container {
+      width: 100%;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 0 20px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .hero-section {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      text-align: center;
+      padding: 80px 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .hero-content {
+      position: relative;
+      z-index: 2;
+      max-width: 800px;
+      margin: 0 auto;
+    }
+
+    /* ================================
+       Titre principal (identique index.html)
+       ================================ */
+    .hero-title {
+      font-family: 'Bangers', cursive;
+      font-size: 5.5rem;
+      color: var(--highlight-color);
+      text-shadow: 5px 5px 0 #000,
+                   -2px -2px 0 #000,
+                    2px -2px 0 #000,
+                   -2px  2px 0 #000,
+                    2px  2px 0 #000;
+      letter-spacing: 3px;
+      margin-bottom: 30px;
+      transform: rotate(-2deg);
+      animation: titleAnimation 3s infinite alternate;
+      position: relative;
+      display: inline-block;
+    }
+    @keyframes titleAnimation {
+      0% {
+        transform: rotate(-2deg) scale(1);
+        text-shadow: 5px 5px 0 #000,
+                     -2px -2px 0 #000,
+                      2px -2px 0 #000,
+                     -2px  2px 0 #000,
+                      2px  2px 0 #000;
+      }
+      100% {
+        transform: rotate(-1deg) scale(1.03);
+        text-shadow: 8px 8px 0 #000,
+                     -3px -3px 0 #000,
+                      3px -3px 0 #000,
+                     -3px  3px 0 #000,
+                      3px  3px 0 #000;
+      }
+    }
+
+    .pow-effect {
+      position: absolute;
+      width: 120%;
+      height: 120%;
+      top: -10%;
+      left: -10%;
+      background: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><path d="M50,0 L60,30 L95,35 L70,60 L75,95 L50,80 L25,95 L30,60 L5,35 L40,30 Z" fill="%23FF3019" stroke="%23000" stroke-width="2"/></svg>');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+      z-index: -1;
+      animation: rotate 20s linear infinite;
+      opacity: 0.6;
+    }
+    @keyframes rotate {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .hero-subtitle {
+      font-size: 1.5rem;
+      margin-bottom: 50px;
+      text-align: center;
+      font-weight: 400;
+      color: white;
+      text-shadow: var(--text-shadow);
+      line-height: 1.6;
+      position: relative;
+      z-index: 2;
+    }
+
+    /* ================================
+       Bouton identique à index.html
+       ================================ */
+    .create-btn {
+      display: inline-block;
+      width: 100%;
+      padding: 18px 30px;
+      background: linear-gradient(45deg, var(--button-gradient-1), var(--button-gradient-2));
+      color: white;
+      font-size: 1.4rem;
+      font-weight: bold;
+      text-align: center;
+      border: none;
+      border-radius: 15px;
+      cursor: pointer;
+      margin-top: 30px;
+      position: relative;
+      overflow: hidden;
+      font-family: 'Bangers', cursive;
+      letter-spacing: 2px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      transition: all 0.4s ease;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+    }
+    .create-btn:before {
+      content: "";
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+      transition: 0.5s;
+    }
+    .create-btn:hover:before {
+      left: 100%;
+    }
+    .create-btn:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+    }
+    .create-btn:active {
+      transform: translateY(2px);
+    }
+
+    /* ================================
+       Cartes de plan
+       ================================ */
+    .plan-options {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap; /* Par défaut, s'empile si pas assez de place */
+      margin-top: 40px;
+    }
+
+    /* Forcer sur une seule ligne à partir de 992px (bureau) */
+    @media (min-width: 992px) {
+      .plan-options {
+        flex-wrap: nowrap; /* Plus de wrap => sur une ligne */
+      }
+    }
+
+    .plan-card {
+      background: var(--form-bg);
+      border: 2px solid rgba(255, 215, 0, 0.3);
+      border-radius: 20px;
+      width: 300px;
+      padding: 30px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      text-align: center;
+      flex: 0 0 auto; /* Conserve la largeur fixe */
+    }
+    .plan-card h2 {
+      font-family: 'Rowdies', cursive;
+      font-size: 2rem;
+      color: var(--highlight-color);
+      margin-bottom: 15px;
+      text-shadow: var(--text-shadow);
+    }
+    .plan-card p {
+      font-size: 1rem;
+      margin-bottom: 20px;
+      color: #fff;
+      line-height: 1.4;
+    }
+
+    /* ================================
+       Responsive : Ajustements
+       ================================ */
+    @media (max-width: 992px) {
+      .hero-title {
+        font-size: 4rem;
+      }
+    }
+    @media (max-width: 768px) {
+      .hero-title {
+        font-size: 3.2rem;
+      }
+      .hero-subtitle {
+        font-size: 1.2rem;
+      }
+      .plan-card {
+        width: 280px; /* Pour mieux rentrer sur tablette */
+      }
+    }
+    @media (max-width: 576px) {
+      .hero-title {
+        font-size: 2.5rem;
+      }
+      .hero-subtitle {
+        font-size: 1.1rem;
+      }
+      .plan-card {
+        width: 100%; /* Sur mobile, chaque carte prend la largeur du conteneur */
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Fond dynamique (identique index.html) -->
+  <div class="hero-bg"></div>
+  <div class="grid-overlay"></div>
+  <div class="flying-pages">
+    <div class="page"></div>
+    <div class="page"></div>
+    <div class="page"></div>
+    <div class="page"></div>
+    <div class="page"></div>
+  </div>
+
+  <div class="container">
+    <section class="hero-section">
+      <div class="action-lines"></div>
+      <div class="comic-deco deco1">BAM!</div>
+      <div class="comic-deco deco2">POW!</div>
+      <div class="comic-deco deco3">ZOOM!</div>
+      <div class="floating-element float1"></div>
+      <div class="floating-element float2"></div>
+
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <div class="pow-effect"></div>
+          CHOISISSEZ VOTRE PLAN
+        </h1>
+        <p class="hero-subtitle">
+          Sélectionnez l'option qui vous convient pour recevoir votre bande dessinée personnalisée.
+        </p>
+
+        <!-- Cartes de plan -->
+        <div class="plan-options">
+          <!-- Carte E-book -->
+          <div class="plan-card">
+            <h2>E-book [9,99 €]</h2>
+            <p> Recevez immédiatement votre BD au format PDF.  
+              Parfait pour lire sur vos appareils (ordinateur, tablette, smartphone).</p>
+            <form action="/prepare-payment" method="POST">
+              <input type="hidden" name="plan" value="ebook">
+              <button type="submit" class="create-btn">CHOISIR E-BOOK</button>
+            </form>
+          </div>
+
+          <!-- Carte Livre Physique -->
+          <div class="plan-card">
+            <h2>Livre Physique [19,99 €]</h2>
+            <p>Recevez votre BD imprimée et livrée chez vous.  
+              Profitez d’un vrai livre en couleurs, à feuilleter ou offrir.</p>
+            <form action="/prepare-payment" method="POST">
+              <input type="hidden" name="plan" value="livre_physique">
+              <button type="submit" class="create-btn">CHOISIR LIVRE PHYSIQUE</button>
+            </form>
+          </div>
+
+          <!-- Carte Bundle -->
+          <div class="plan-card">
+            <h2>Bundle : E-book + Livre Physique [24,99 €]</h2>
+            <p>Obtenez à la fois la version numérique (PDF) pour lecture instantanée  
+              <strong>et</strong> le livre papier que nous vous expédions chez vous.</p>
+            <form action="/prepare-payment" method="POST">
+              <input type="hidden" name="plan" value="bundle">
+              <button type="submit" class="create-btn">CHOISIR BUNDLE</button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+</body>
+</html>
