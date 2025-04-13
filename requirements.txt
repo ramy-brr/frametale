@@ -1,0 +1,7 @@
+flask
+openai
+stripe
+fpdf
+python-dotenv
+requests
+gunicorn
