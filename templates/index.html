@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="{{ url_for('static', filename='images/logo-bd.png') }}">
     <title>Créez votre bande dessinée personnalisée - Univers BD</title>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Bangers&family=Poppins:wght@300;400;600;800&family=Rowdies:wght@400;700&display=swap');
@@ -719,6 +720,42 @@
                 font-size: 1.1rem;
             }
         }
+        
+        /* ------------------- Ajout : Support Box ------------------- */
+        .support-box {
+            background-color: var(--form-bg);
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            margin-top: 30px;
+            position: relative;
+            overflow: hidden;
+        }
+        .support-box .glow-border {
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--secondary-color), var(--accent-color), var(--primary-color), var(--secondary-color));
+            background-size: 400% 400%;
+            border-radius: 22px;
+            z-index: -1;
+            animation: glowAnimation 3s ease infinite;
+        }
+        .support-box h2 {
+            font-family: 'Rowdies', cursive;
+            font-size: 2rem;
+            color: var(--highlight-color);
+            margin-bottom: 15px;
+            text-shadow: var(--text-shadow);
+        }
+        .support-box p {
+            font-size: 1rem;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
+        /* ---------------- Fin du Support Box ---------------- */
     </style>
 </head>
 <body>
@@ -746,7 +783,7 @@
             <div class="floating-element float1"></div>
             <div class="floating-element float2"></div>
             
-            <!-- Contenu du héro -->
+            <!-- Contenu du héros -->
             <div class="hero-content">
                 <h1 class="hero-title">
                     <div class="pow-effect"></div>
@@ -769,7 +806,7 @@
                             <div class="form-section">
                                 <h2 class="form-title">Personnalisez votre aventure</h2>
                                 
-                                <!-- Formulaire vers /choose-plan (changement ici) -->
+                                <!-- Formulaire vers /choose-plan -->
                                 <form action="/choose-plan" method="POST">
                                     <div class="form-group">
                                         <label for="name">Votre nom de héros</label>
@@ -845,6 +882,20 @@
                     </div> <!-- fin .card-3d-front -->
                 </div> <!-- fin .card-3d-wrapper -->
             </div> <!-- fin .central-area -->
+            
+            <!-- Nouvelle section de support -->
+            <div class="support-box">
+                <div class="glow-border"></div>
+                <div class="support-content">
+                    <h2>💬 Besoin d’un coup de pouce ?</h2>
+                    <p>Ton aventure rencontre un petit obstacle ? Pas de panique, notre équipe héroïque est prête à intervenir pour t’aider à poursuivre ta bande dessinée personnalisée !</p>
+                    <p>📧 <strong>Email</strong> : support@frametale.store</p>
+                    <p>🕒 Notre équipe te répond du lundi au vendredi, de 9h à 18h (heure de Paris).</p>
+                    <p>🛠️ <strong>Le service est actuellement en version test.</strong> Merci pour ta patience ! Chaque retour nous aide énormément à améliorer ton expérience.</p>
+                    <p>👉 N'hésite pas à nous envoyer tes idées ou suggestions. On lit tout avec attention !</p>
+                </div>
+            </div>
+            
         </section>
     </div>
 </body>
