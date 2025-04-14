@@ -7,6 +7,8 @@ import tempfile
 import requests
 import uuid
 import threading
+import json
+from datetime import datetime
 from flask import Flask, request, render_template, redirect, url_for, send_file, session
 from fpdf import FPDF
 from openai import OpenAI
@@ -28,6 +30,42 @@ LULU_AUTH_HEADER = os.getenv("LULU_AUTH_HEADER")
 
 # Prix par défaut du produit (en centimes)
 PRICE = 1000
+
+# -----------------------------------
+# NOUVEAU: GESTION DES COMMANDES
+# -----------------------------------
+ORDERS_FILE = "processed_orders.json"
+
+# Initialiser le fichier s'il n'existe pas
+if not os.path.exists(ORDERS_FILE):
+    with open(ORDERS_FILE, "w") as f:
+        json.dump({}, f)
+
+def order_is_processed(order_id):
+    """Vérifie si une commande a déjà été traitée"""
+    try:
+        with open(ORDERS_FILE, "r") as f:
+            processed_orders = json.load(f)
+            return order_id in processed_orders
+    except Exception:
+        return False
+
+def mark_order_processed(order_id, email):
+    """Marque une commande comme traitée"""
+    try:
+        with open(ORDERS_FILE, "r") as f:
+            processed_orders = json.load(f)
+        
+        processed_orders[order_id] = {
+            "email": email,
+            "processed_at": datetime.now().isoformat()
+        }
+        
+        with open(ORDERS_FILE, "w") as f:
+            json.dump(processed_orders, f)
+        return True
+    except Exception:
+        return False
 
 # -----------------------------
 # 2) ROUTE D'ACCUEIL
@@ -244,6 +282,10 @@ def payment_success():
     session_id = request.args.get("session_id")
     order_id = request.args.get("order_id")
 
+    # NOUVEAU: Vérifier si la commande a déjà été traitée
+    if order_is_processed(order_id):
+        return render_template("already_processed.html")
+
     # Vérifier cohérence
     if order_id != session.get("order_id"):
         return redirect(url_for("index"))
@@ -291,14 +333,22 @@ def process_comic():
     order_data = session.get("order_data", {})
     plan = session.get("plan", "ebook")
     email = order_data.get("email", "")
+    order_id = session.get("order_id")
     
-    if not order_data:
+    if not order_data or not order_id:
         return {"success": False, "error": "Données de commande non trouvées"}, 400
+    
+    # NOUVEAU: Vérifier si la commande a déjà été traitée
+    if order_is_processed(order_id):
+        return {"success": False, "error": "Commande déjà traitée"}, 403
     
     # Générer le comic de manière synchrone (puisque l'utilisateur attend)
     pdf_path = process_comic_order(order_data, email, plan)
     
     if pdf_path:
+        # NOUVEAU: Marquer la commande comme traitée
+        mark_order_processed(order_id, email)
+        
         # Stocker le chemin dans la session
         session["pdf_path"] = pdf_path
         return {"success": True, "plan": plan}
@@ -314,8 +364,14 @@ def view_pdf():
     Affiche directement le PDF dans le navigateur
     """
     pdf_path = session.get("pdf_path")
-    if not pdf_path or not os.path.exists(pdf_path):
+    order_id = session.get("order_id")
+    
+    if not pdf_path or not os.path.exists(pdf_path) or not order_id:
         return "PDF non disponible", 404
+    
+    # NOUVEAU: Vérifier que la commande a bien été traitée
+    if not order_is_processed(order_id):
+        return "Cette commande n'a pas été correctement traitée", 403
     
     # Envoyer le fichier avec disposition 'inline' pour qu'il s'ouvre dans le navigateur
     return send_file(pdf_path, mimetype='application/pdf', as_attachment=False)
